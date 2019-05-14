@@ -4,6 +4,12 @@ import indexRoutes from './routes/indexRoutes';
 import gamesRoutes from './routes/gamesRoutes';
 import morgan from 'morgan';
 import cors from 'cors';
+import * as fs from 'fs'
+import * as https from 'https'
+
+
+import {handleAuthentication} from './auth/auth'
+import {handleAuthorization} from './auth/authz'
 
 class Server {
 
@@ -24,16 +30,21 @@ class Server {
  }
 
  routes(): void {
-    this.app.use('/',indexRoutes);
-    this.app.use('/api/games',gamesRoutes);
+    this.app.use('/',indexRoutes, );
+    this.app.use('/api/games', handleAuthorization, gamesRoutes );
  }
 
  start():void{
-   this.app.listen(this.app.get('port'), () => {
-     console.log(`Servido rodando na porta ${this.app.get('port')}`);
-   });
+   https.createServer(options, this.app).listen(this.app.get('port'), () => {
+     console.log(`JSON Server is running https://localhost:${this.app.get('port')}`)
+   })
  }
 
+}
+
+const options = {
+  cert : fs.readFileSync('./src/keys/cert.pem'),
+  key : fs.readFileSync('./src/keys/key.pem')
 }
 
 const server = new Server();

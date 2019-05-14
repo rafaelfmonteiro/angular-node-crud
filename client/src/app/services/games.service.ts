@@ -2,17 +2,19 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http'
 import {Game} from '../models/Game';
 import { Observable } from 'rxjs';
+import {URL_API} from '../app.api'
 
 @Injectable({
   providedIn: 'root'
 })
 export class GamesService {
 
-  API_URL = 'http://localhost:3002/api';
+  API_URL = URL_API;//'http://localhost:3002/api';
 
   constructor(private http: HttpClient) { }
 
   getGames() {
+    console.log(`URL: ${this.API_URL}/games`)
     return this.http.get(`${this.API_URL}/games`);
   }
 
